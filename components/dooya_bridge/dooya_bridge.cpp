@@ -47,11 +47,6 @@ void DooyaBridge::loop()
     if (byte == ';')
       parse_rx();
   }
-
-  ESP_LOGD(TAG, "Address: %s", address_.c_str());
-  ESP_LOGD(TAG, "Paired devices:");
-  for (std::string address : paired_addresses_)
-    ESP_LOGD(TAG, "%s", address.c_str());
 }
 
 void DooyaBridge::dump_config()
