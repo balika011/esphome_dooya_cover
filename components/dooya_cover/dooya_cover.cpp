@@ -20,8 +20,12 @@ void DooyaCover::setup()
     return;
   }
 
+  parent_->register_listener(address_, [this](std::string rx) {
+    parse_rx(rx);
+  });
+
   // Get current position on setup
-  write_str(("!" + address_ + "r?;").c_str());
+  parent_->write_str(("!" + address_ + "r?;").c_str());
 }
 
 void DooyaCover::loop()
@@ -34,17 +38,7 @@ void DooyaCover::loop()
   if (current_operation != cover::COVER_OPERATION_IDLE && !polling_)
   {
     polling_ = true;
-    write_str(("!" + address_ + "r?;").c_str());
-  }
-
-  while (available())
-  {
-    uint8_t byte = read();
-    if (byte == '!')
-      rx_buf_.clear();
-    rx_buf_ += byte;
-    if (byte == ';')
-      parse_rx();
+    parent_->write_str(("!" + address_ + "r?;").c_str());
   }
 }
 
@@ -98,7 +92,7 @@ void DooyaCover::control(const cover::CoverCall &call)
     std::ostringstream ss;
     ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_position_) * DOOYA_MAX_POSITION);
 
-    write_str(("!" + address_ + "m" + ss.str() + ";").c_str());
+    parent_->write_str(("!" + address_ + "m" + ss.str() + ";").c_str());
   }
 
   if (new_tilt_.has_value())
@@ -114,46 +108,18 @@ void DooyaCover::control(const cover::CoverCall &call)
     std::ostringstream ss;
     ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_tilt_) * DOOYA_MAX_TILT);
 
-    write_str(("!" + address_ + "b" + ss.str() + ";").c_str());
+    parent_->write_str(("!" + address_ + "b" + ss.str() + ";").c_str());
   }
 
   if (call.get_stop())
   {
     ESP_LOGD(TAG, "control::stop");
-    write_str(("!" + address_ + "s;").c_str());
+    parent_->write_str(("!" + address_ + "s;").c_str());
   }
 }
 
-void DooyaCover::parse_rx()
+void DooyaCover::parse_rx(std::string rx)
 {
-  std::string rx = rx_buf_;
-  rx_buf_.clear();
-  if (rx[0] != '!' || rx[rx.length() - 1] != ';')
-    return;
-
-  rx = rx.substr(1, rx.length() - 1);
-
-  ESP_LOGD(TAG, "parse_rx: rx: %s", rx.c_str());
-
-  std::string address = rx.substr(0, 3);
-  rx = rx.substr(3);
-
-  ESP_LOGD(TAG, "parse_rx: address: %s", address.c_str());
-
-  auto extra_index = rx.find(',');
-  if (extra_index != std::string::npos)
-  {
-    std::string extra = rx.substr(extra_index + 1);
-    ESP_LOGD(TAG, "parse_rx: extra: %s", extra.c_str());
-    rx = rx.substr(0, extra_index);
-  }
-
-  if (address != address_)
-  {
-    ESP_LOGE(TAG, "Data received for unknown address: %s (expected: %s)", address.c_str(), address_.c_str());
-    return;
-  }
-
   ESP_LOGD(TAG, "parse_rx: data: %s", rx.c_str());
 
   optional<float> data_position;
