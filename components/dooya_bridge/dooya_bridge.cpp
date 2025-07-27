@@ -21,6 +21,7 @@ void DooyaBridge::setup()
     rx_buf_ += byte;
     if (byte == ';')
     {
+      ESP_LOGD(TAG, "rx_buf_: %s", rx_buf_.c_str());
       std::string address = rx_buf_.substr(0, 3);
       if (!address_.size())
         address_ = address;
@@ -43,19 +44,19 @@ void DooyaBridge::loop()
       parse_rx();
   }
 
-  ESP_LOGD(TAG, "Address: %s", address_);
+  ESP_LOGD(TAG, "Address: %s", address_.c_str());
   ESP_LOGD(TAG, "Paired devices:");
   for (std::string address : paired_addresses_)
-    ESP_LOGD(TAG, "%s", address);
+    ESP_LOGD(TAG, "%s", address.c_str());
 }
 
 void DooyaBridge::dump_config()
 {
   ESP_LOGCONFIG(TAG, "Dooya bridge");
-  ESP_LOGCONFIG(TAG, "Address: %s", address_);
+  ESP_LOGCONFIG(TAG, "Address: %s", address_.c_str());
   ESP_LOGCONFIG(TAG, "Paired devices:");
   for (std::string address : paired_addresses_)
-    ESP_LOGCONFIG(TAG, "%s", address);
+    ESP_LOGCONFIG(TAG, "%s", address.c_str());
 }
 
 void DooyaBridge::register_listener(std::string address, const std::function<void(std::string)> &func)
