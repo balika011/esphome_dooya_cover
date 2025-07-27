@@ -35,7 +35,7 @@ void DooyaBridge::parse_rx()
   if (rx[0] != '!' || rx[rx.length() - 1] != ';')
     return;
 
-  rx = rx.substr(1, rx.length() - 1);
+  rx = rx.substr(1, rx.length() - 2);
 
   ESP_LOGD(TAG, "parse_rx: rx: %s", rx.c_str());
 
