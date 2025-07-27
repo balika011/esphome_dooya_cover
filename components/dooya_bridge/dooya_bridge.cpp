@@ -8,7 +8,26 @@ static const char *TAG = "dooya_bridge.component";
 
 void DooyaBridge::setup()
 {
+  write_str("!000v?;");
 
+  // Wait for response...
+  while (!available());
+
+  while (available())
+  {
+    uint8_t byte = read();
+    if (byte == '!')
+      rx_buf_.clear();
+    rx_buf_ += byte;
+    if (byte == ';')
+    {
+      std::string address = rx.substr(0, 3);
+      if (!address_.size())
+        address_ = address;
+      else
+       paired_addresses_.push_back(address);
+    }
+  }
 }
 
 void DooyaBridge::loop()
@@ -26,6 +45,28 @@ void DooyaBridge::loop()
 
 void DooyaBridge::dump_config()
 {
+  ESP_LOGCONFIG(TAG, "Dooya bridge");
+  ESP_LOGCONFIG(TAG, "Address: %s", address_);
+  ESP_LOGCONFIG(TAG, "Paired devices: %s", address_);
+  for (std::string address : paired_addresses_)
+    ESP_LOGCONFIG(TAG, "%s", address);
+}
+
+void register_listener(std::string address, const std::function<void(std::string)> &func)
+{
+  if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) == paired_addresses_.end())
+  {
+    ESP_LOGE(TAG, "No device paired by address: %s", address.c_str());
+    return;
+  }
+
+  if (listeners_.find(address) != listeners_.end())
+  {
+    ESP_LOGE(TAG, "Listener already registered for address: %s", address.c_str());
+    return;
+  }
+  
+  listeners_[address] = func;
 }
 
 void DooyaBridge::parse_rx()
