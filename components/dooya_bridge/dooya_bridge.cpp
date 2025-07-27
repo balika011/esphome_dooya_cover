@@ -22,7 +22,7 @@ void DooyaBridge::setup()
     if (byte == ';')
     {
       ESP_LOGD(TAG, "rx_buf_: %s", rx_buf_.c_str());
-      std::string address = rx_buf_.substr(0, 3);
+      std::string address = rx_buf_.substr(1, 3);
       if (!address_.size())
         address_ = address;
       else
