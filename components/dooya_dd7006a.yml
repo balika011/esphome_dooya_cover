@@ -1,0 +1,78 @@
+esphome:
+  name: dooya-bridge
+  friendly_name: Dooya Bridge
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+  encryption:
+    key: "xxxx"
+
+ota:
+  - platform: esphome
+    password: "xxxx"
+
+ethernet:
+  type: IP101
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  power_pin: GPIO5
+  clk:
+    pin: GPIO0
+    mode: CLK_EXT_IN
+  phy_addr: 1
+
+#wifi:
+#  ssid: !secret wifi_ssid
+#  password: !secret wifi_password
+
+light:
+  - platform: rgb
+    name: "RGB LED"
+    red: led_red
+    green: led_green
+    blue: led_blue
+
+output:
+  - platform: ledc
+    id: led_red
+    pin: GPIO4
+  - platform: ledc
+    id: led_green
+    pin: GPIO16
+  - platform: ledc
+    id: led_blue
+    pin: GPIO17
+
+binary_sensor:
+  - platform: gpio
+    pin: 
+      number: GPIO36
+      inverted: True
+    name: "Button"
+
+uart:
+  id: dooya_cover_uart
+  tx_pin: GPIO15
+  rx_pin: GPIO2
+  baud_rate: 115200
+
+external_components:
+  - source: github://balika011/esphome_dooya_cover
+    components: [ dooya_bridge, dooya_cover ]
+    refresh: 1s
+
+dooya_bridge:
+  id: dooya_bridge_1
+  uart_id: dooya_cover_uart
+
+cover:
+  - platform: dooya_cover
+    name: Rolling shutter
+    dooya_bridge_id: dooya_bridge_1
+    address: "XXX"
