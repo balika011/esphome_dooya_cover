@@ -1,3 +1,6 @@
+#include <chrono>
+#include <thread>
+
 #include "dooya_bridge.h"
 #include "esphome/core/log.h"
 
@@ -28,6 +31,7 @@ void DooyaBridge::setup()
       else
        paired_addresses_.push_back(address);
       rx_buf_.clear();
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
   }
 }
