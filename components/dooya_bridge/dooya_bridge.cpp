@@ -21,11 +21,12 @@ void DooyaBridge::setup()
     rx_buf_ += byte;
     if (byte == ';')
     {
-      std::string address = rx.substr(0, 3);
+      std::string address = rx_buf_.substr(0, 3);
       if (!address_.size())
         address_ = address;
       else
        paired_addresses_.push_back(address);
+      rx_buf_.clear();
     }
   }
 }
@@ -52,7 +53,7 @@ void DooyaBridge::dump_config()
     ESP_LOGCONFIG(TAG, "%s", address);
 }
 
-void register_listener(std::string address, const std::function<void(std::string)> &func)
+void DooyaBridge::register_listener(std::string address, const std::function<void(std::string)> &func)
 {
   if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) == paired_addresses_.end())
   {
