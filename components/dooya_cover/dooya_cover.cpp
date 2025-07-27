@@ -87,7 +87,7 @@ void DooyaCover::control(const cover::CoverCall &call)
       current_operation = cover::COVER_OPERATION_CLOSING;
     else
       current_operation = cover::COVER_OPERATION_OPENING;
-   publish_state();
+    publish_state();
 
     std::ostringstream ss;
     ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_position_) * DOOYA_MAX_POSITION);
@@ -103,7 +103,7 @@ void DooyaCover::control(const cover::CoverCall &call)
       current_operation = cover::COVER_OPERATION_CLOSING;
     else
       current_operation = cover::COVER_OPERATION_OPENING;
-   publish_state();
+    publish_state();
 
     std::ostringstream ss;
     ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_tilt_) * DOOYA_MAX_TILT);
@@ -113,6 +113,9 @@ void DooyaCover::control(const cover::CoverCall &call)
 
   if (call.get_stop())
   {
+    current_operation = cover::COVER_OPERATION_IDLE;
+    publish_state();
+
     ESP_LOGD(TAG, "control::stop");
     parent_->write_str(("!" + address_ + "s;").c_str());
   }
