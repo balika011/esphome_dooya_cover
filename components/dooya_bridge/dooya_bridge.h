@@ -7,10 +7,6 @@
 #include "esphome/core/defines.h"
 #include "esphome/components/uart/uart.h"
 
-#ifdef USE_COVER
-#include "esphome/components/cover/cover.h"
-#endif
-
 namespace esphome {
 namespace dooya_bridge {
 
@@ -22,6 +18,8 @@ class DooyaBridge : public Component, public uart::UARTDevice
   void dump_config() override;
 
   void register_listener(std::string address, const std::function<void(std::string)> &func);
+
+  bool start_pairing();
 
  protected:
   void parse_rx();
