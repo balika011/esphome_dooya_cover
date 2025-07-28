@@ -78,6 +78,8 @@ void DooyaBridge::register_listener(std::string address, const std::function<voi
 bool DooyaBridge::start_pairing()
 {
   ESP_LOGI(TAG, "Pairing...");
+
+  return true;
 }
 
 void DooyaBridge::parse_rx()
