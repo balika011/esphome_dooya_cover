@@ -30,7 +30,7 @@ async def to_code(config):
     await uart.register_uart_device(var, config)
     await cg.register_component(var, config)
 
-DooyaBridgePairingAction = at581x_ns.class_("DooyaBridgePairingAction", automation.Action)
+DooyaBridgePairingAction = dooya_bridge_ns.class_("DooyaBridgePairingAction", automation.Action)
 
 @automation.register_action(
     "dooya_bridge.pairing",
