@@ -1,8 +1,8 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
+from esphome import automation
 from esphome.components import uart
 from esphome.const import CONF_ID
-from esphome.automation import maybe_simple_id
 
 DEPENDENCIES = ["uart"]
 
@@ -35,7 +35,7 @@ DooyaBridgePairingAction = dooya_bridge_ns.class_("DooyaBridgePairingAction", au
 @automation.register_action(
     "dooya_bridge.pairing",
     DooyaBridgePairingAction,
-    maybe_simple_id(
+    automation.maybe_simple_id(
         {
             cv.Required(CONF_ID): cv.use_id(DooyaBridge),
         }
