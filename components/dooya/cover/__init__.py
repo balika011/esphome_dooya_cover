@@ -2,9 +2,9 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import cover
 from esphome.const import CONF_ID
-from esphome.components.dooya_bridge import HUB_CHILD_SCHEMA, CONF_DOOYA_BRIDGE_ID
+from .. import HUB_CHILD_SCHEMA, CONF_DOOYA_BRIDGE_ID
 
-DEPENDENCIES = ["dooya_bridge"]
+DEPENDENCIES = ["dooya"]
 
 CONF_ADDRESS = "address"
 
