@@ -9,7 +9,7 @@ DEPENDENCIES = ["dooya"]
 CONF_ADDRESS = "address"
 
 dooya_cover_ns = cg.esphome_ns.namespace("dooya_cover")
-DooyaCover = dooya_cover_ns.class_("DooyaCover", cg.Component, cover.Cover)
+DooyaCover = dooya_cover_ns.class_("DooyaCover", cg.Component, cover.Cover, cg.Parented)
 
 def validate_address(config):
     if len(config[CONF_ADDRESS]) != 3:
@@ -24,9 +24,10 @@ CONFIG_SCHEMA = cv.All(
 )
 
 async def to_code(config):
-    paren = await cg.get_variable(config[CONF_DOOYA_BRIDGE_ID])
+    #paren = await cg.get_variable(config[CONF_DOOYA_BRIDGE_ID])
     var = cg.new_Pvariable(config[CONF_ID])
-    await cg.register_component(var, config)
     cg.add(var.set_address(config[CONF_ADDRESS]))
-    cg.add(var.set_parent(paren))
-    await cover.register_cover(var, config)
+    await cg.register_parented(var, config[CONF_DOOYA_BRIDGE_ID])
+    #await cg.register_component(var, config)
+    #cg.add(var.set_parent(paren))
+    #await cover.register_cover(var, config)

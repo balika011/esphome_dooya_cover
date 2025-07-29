@@ -10,7 +10,7 @@
 namespace esphome {
 namespace dooya_cover {
 
-class DooyaCover : public Component, public cover::Cover
+class DooyaCover : public Component, public cover::Cover, public Parented<DooyaBridge>
 {
  public:
   void setup() override;
