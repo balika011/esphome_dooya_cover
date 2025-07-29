@@ -38,12 +38,20 @@ void DooyaBridge::setup()
 void DooyaBridge::loop()
 {
   if (pairing_.in_progress)
-    pairing_.in_progress = pairing_.start - std::chrono::high_resolution_clock::now() < std::chrono::seconds(30);
-
-  if (pairing_.in_progress && !pairing_.req_sent)
   {
-    write_str("!000&;");
-    pairing_.req_sent = true;
+    pairing_.in_progress = std::chrono::high_resolution_clock::now() - pairing_.start < std::chrono::seconds(30);
+    if (pairing_.in_progress)
+    {
+      if (!pairing_.req_sent)
+      {
+        write_str("!000&;");
+        pairing_.req_sent = true;
+      }
+    }
+    else
+    {
+      ESP_LOGI(TAG, "30s passed, no new device found. Stopping pairing.");
+    }
   }
 
   while (available())
