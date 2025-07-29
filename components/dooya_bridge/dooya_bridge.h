@@ -2,6 +2,7 @@
 
 #include <cinttypes>
 #include <unordered_map>
+#include <chrono>
 
 #include "esphome/core/component.h"
 #include "esphome/core/defines.h"
