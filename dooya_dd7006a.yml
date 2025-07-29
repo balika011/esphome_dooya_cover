@@ -31,12 +31,26 @@ ethernet:
 #  ssid: !secret wifi_ssid
 #  password: !secret wifi_password
 
-light:
-  - platform: rgb
-    name: "RGB LED"
-    red: led_red
-    green: led_green
-    blue: led_blue
+external_components:
+  - source: github://balika011/esphome_dooya_cover@dev
+    # components: [ dooya_bridge, dooya_cover ]
+    components: [ dooya, dooya/cover ]
+
+uart:
+  id: dooya_bridge_uart
+  tx_pin: GPIO15
+  rx_pin: GPIO2
+  baud_rate: 115200
+
+dooya:
+  id: dooya_bridge_1
+  uart_id: dooya_bridge_uart
+
+cover:
+  - platform: dooya
+    name: Rolling shutter
+    dooya_bridge_id: dooya_bridge_1
+    address: "XXX"
 
 output:
   - platform: ledc
@@ -49,30 +63,19 @@ output:
     id: led_blue
     pin: GPIO17
 
+light:
+  - platform: rgb
+    name: "RGB LED"
+    red: led_red
+    green: led_green
+    blue: led_blue
+
 binary_sensor:
   - platform: gpio
+    name: "Pairing button"
     pin: 
       number: GPIO36
       inverted: True
-    name: "Button"
-
-uart:
-  id: dooya_cover_uart
-  tx_pin: GPIO15
-  rx_pin: GPIO2
-  baud_rate: 115200
-
-external_components:
-  - source: github://balika011/esphome_dooya_cover
-    components: [ dooya_bridge, dooya_cover ]
-    refresh: 1s
-
-dooya_bridge:
-  id: dooya_bridge_1
-  uart_id: dooya_cover_uart
-
-cover:
-  - platform: dooya_cover
-    name: Rolling shutter
-    dooya_bridge_id: dooya_bridge_1
-    address: "XXX"
+    on_press:
+      - then:
+          dooya_bridge.pairing: dooya_bridge_1
