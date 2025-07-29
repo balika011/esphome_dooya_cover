@@ -33,7 +33,6 @@ ethernet:
 
 external_components:
   - source: github://balika011/esphome_dooya_cover@dev
-    # components: [ dooya_bridge, dooya_cover ]
     components: [ dooya, dooya/cover ]
 
 uart:
