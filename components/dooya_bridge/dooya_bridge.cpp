@@ -38,6 +38,15 @@ void DooyaBridge::setup()
 
 void DooyaBridge::loop()
 {
+  if (pairing_.in_progress)
+    pairing_.in_progress = pairing_.start - std::chrono::high_resolution_clock::now() < std::chrono::seconds(30);
+
+  if (pairing_.in_progress && !pairing_.req_sent)
+  {
+    write_str("!000&;");
+    pairing_.req_sent = true;
+  }
+
   while (available())
   {
     uint8_t byte = read();
@@ -79,6 +88,9 @@ bool DooyaBridge::start_pairing()
 {
   ESP_LOGI(TAG, "Pairing...");
 
+  pairing_.start = std::chrono::high_resolution_clock::now();
+  pairing_.in_progress = true;
+
   return true;
 }
 
@@ -108,8 +120,28 @@ void DooyaBridge::parse_rx()
 
   ESP_LOGD(TAG, "parse_rx: data: %s", rx.c_str());
 
+  if (pairing_.in_progress && pairing_.req_sent)
+  {
+    if (address == "000" && data == "Epf")
+    {
+      ESP_LOGI(TAG, "Do device found (yet).");
+      pairing_.req_sent = false;
+      return;
+    }
+    else if(data == "A")
+    {
+      ESP_LOGI(TAG, "Paired to new device, address: %s", address.c_str());
+      pairing_.req_sent = false;
+      pairing_.in_progress = false;
+       paired_addresses_.push_back(address);
+      return;
+    }
+  }
+
   if (auto search = listeners_.find(address); search != listeners_.end())
     search->second(rx);
+  else if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) != paired_addresses_.end())
+    ESP_LOGE(TAG, "No listener for address: %s", address.c_str());
   else
     ESP_LOGE(TAG, "Unknown address: %s", address.c_str());
 }

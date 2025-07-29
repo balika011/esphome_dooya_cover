@@ -28,6 +28,12 @@ class DooyaBridge : public Component, public uart::UARTDevice
   std::string rx_buf_;
   std::string address_;
   std::vector<std::string> paired_addresses_;
+  struct 
+  {
+    bool in_progress = false;
+    std::chrono::time_point<std::chrono::high_resolution_clock> start;
+    bool req_sent = false;
+  } pairing_;
 };
 
 }  // namespace dooya_bridge
