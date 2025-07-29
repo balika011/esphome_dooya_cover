@@ -39,7 +39,9 @@ void DooyaBridge::loop()
 {
   if (pairing_.in_progress)
   {
-    pairing_.in_progress = std::chrono::high_resolution_clock::now() - pairing_.start < std::chrono::seconds(30);
+    if (!pairing_.req_sent)
+      pairing_.in_progress = std::chrono::high_resolution_clock::now() - pairing_.start < std::chrono::seconds(30);
+
     if (pairing_.in_progress)
     {
       if (!pairing_.req_sent)
@@ -95,8 +97,8 @@ bool DooyaBridge::start_pairing()
 {
   ESP_LOGI(TAG, "Pairing...");
 
-  pairing_.start = std::chrono::high_resolution_clock::now();
   pairing_.in_progress = true;
+  pairing_.start = std::chrono::high_resolution_clock::now();
 
   return true;
 }
@@ -127,7 +129,7 @@ void DooyaBridge::parse_rx()
 
   ESP_LOGD(TAG, "parse_rx: data: %s", rx.c_str());
 
-  if (pairing_.in_progress && pairing_.req_sent)
+  if (pairing_.req_sent)
   {
     if (address == "000" && rx == "Epf")
     {
