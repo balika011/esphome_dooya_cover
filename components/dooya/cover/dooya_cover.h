@@ -3,7 +3,7 @@
 #include <cinttypes>
 
 #include "esphome/core/component.h"
-#include "esphome/components/dooya_bridge/dooya_bridge.h"
+#include "esphome/components/dooya/dooya_bridge.h"
 #include "esphome/components/cover/cover.h"
 #include "esphome/components/uart/uart.h"
 
