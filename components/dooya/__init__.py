@@ -10,8 +10,8 @@ MULTI_CONF = True
 
 CONF_DOOYA_BRIDGE_ID = "dooya_bridge_id"
 
-dooya_bridge_ns = cg.esphome_ns.namespace("dooya_bridge")
-DooyaBridge = dooya_bridge_ns.class_("DooyaBridge", cg.Component)
+dooya_ns = cg.esphome_ns.namespace("dooya")
+DooyaBridge = dooya_ns.class_("DooyaBridge", cg.Component)
 
 HUB_CHILD_SCHEMA = cv.Schema(
     {
@@ -30,7 +30,7 @@ async def to_code(config):
     await uart.register_uart_device(var, config)
     await cg.register_component(var, config)
 
-DooyaBridgePairingAction = dooya_bridge_ns.class_("DooyaBridgePairingAction", automation.Action)
+DooyaBridgePairingAction = dooya_ns.class_("DooyaBridgePairingAction", automation.Action)
 
 @automation.register_action(
     "dooya_bridge.pairing",

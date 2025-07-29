@@ -5,7 +5,7 @@
 #include "dooya_cover.h"
 
 namespace esphome {
-namespace dooya_cover {
+namespace dooya {
 
 #define DOOYA_MAX_POSITION 100
 #define DOOYA_MAX_TILT 180
@@ -197,5 +197,5 @@ void DooyaCover::parse_rx(std::string rx)
   publish_state();
 }
 
-}  // namespace dooya_cover
+}  // namespace dooya
 }  // namespace esphome

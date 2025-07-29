@@ -2,14 +2,13 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import cover
 from esphome.const import CONF_ID
-from .. import HUB_CHILD_SCHEMA, CONF_DOOYA_BRIDGE_ID
+from .. import HUB_CHILD_SCHEMA, CONF_DOOYA_BRIDGE_ID, dooya_ns
 
 DEPENDENCIES = ["dooya"]
 
 CONF_ADDRESS = "address"
 
-dooya_cover_ns = cg.esphome_ns.namespace("dooya_cover")
-DooyaCover = dooya_cover_ns.class_("DooyaCover", cg.Component, cover.Cover, cg.Parented)
+DooyaCover = dooya_ns.class_("DooyaCover", cg.Component, cover.Cover, cg.Parented)
 
 def validate_address(config):
     if len(config[CONF_ADDRESS]) != 3:

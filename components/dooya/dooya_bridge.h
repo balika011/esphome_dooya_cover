@@ -9,7 +9,7 @@
 #include "esphome/components/uart/uart.h"
 
 namespace esphome {
-namespace dooya_bridge {
+namespace dooya {
 
 class DooyaBridge : public Component, public uart::UARTDevice
 {
@@ -37,5 +37,5 @@ class DooyaBridge : public Component, public uart::UARTDevice
   } pairing_;
 };
 
-}  // namespace dooya_bridge
+}  // namespace dooya
 }  // namespace esphome

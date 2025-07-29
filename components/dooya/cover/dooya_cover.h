@@ -8,9 +8,9 @@
 #include "esphome/components/uart/uart.h"
 
 namespace esphome {
-namespace dooya_cover {
+namespace dooya {
 
-class DooyaCover : public Component, public cover::Cover, public Parented<dooya_bridge::DooyaBridge>
+class DooyaCover : public Component, public cover::Cover, public Parented<DooyaBridge>
 {
  public:
   void setup() override;
@@ -29,5 +29,5 @@ class DooyaCover : public Component, public cover::Cover, public Parented<dooya_
   bool polling_ = false;
 };
 
-}  // namespace dooya_cover
+}  // namespace dooya
 }  // namespace esphome
