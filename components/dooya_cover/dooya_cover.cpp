@@ -45,14 +45,14 @@ void DooyaCover::loop()
 void DooyaCover::dump_config()
 {
   ESP_LOGCONFIG(TAG, "Dooya cover");
-  ESP_LOGCONFIG(TAG, "Address: %s", address_);
+  ESP_LOGCONFIG(TAG, "Address: %s", address_.c_str());
   if (new_position_.has_value())
   {
-    ESP_LOGCONFIG(TAG, "Destination position: %s", *new_position_);
+    ESP_LOGCONFIG(TAG, "Destination position: %f", *new_position_);
   }
   if (new_tilt_.has_value())
   {
-    ESP_LOGCONFIG(TAG, "Destination tilt: %s", *new_tilt_);
+    ESP_LOGCONFIG(TAG, "Destination tilt: %f", *new_tilt_);
   }
 }
 
