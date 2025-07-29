@@ -4,7 +4,7 @@
 #include "esphome/core/log.h"
 
 namespace esphome {
-namespace dooya_bridge {
+namespace dooya {
 
 static const char *TAG = "dooya_bridge.component";
 
@@ -155,5 +155,5 @@ void DooyaBridge::parse_rx()
     ESP_LOGE(TAG, "Unknown address: %s", address.c_str());
 }
 
-} //namespace dooya_bridge
+} //namespace dooya
 } //namespace esphome
