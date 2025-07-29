@@ -121,18 +121,18 @@ void DooyaBridge::parse_rx()
 
   if (pairing_.in_progress && pairing_.req_sent)
   {
-    if (address == "000" && data == "Epf")
+    if (address == "000" && rx == "Epf")
     {
       ESP_LOGI(TAG, "Do device found (yet).");
       pairing_.req_sent = false;
       return;
     }
-    else if(data == "A")
+    else if(rx == "A")
     {
       ESP_LOGI(TAG, "Paired to new device, address: %s", address.c_str());
       pairing_.req_sent = false;
       pairing_.in_progress = false;
-       paired_addresses_.push_back(address);
+      paired_addresses_.push_back(address);
       return;
     }
   }
