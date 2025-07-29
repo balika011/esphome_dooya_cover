@@ -27,6 +27,6 @@ async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     cg.add(var.set_address(config[CONF_ADDRESS]))
     await cg.register_parented(var, config[CONF_DOOYA_BRIDGE_ID])
-    #await cg.register_component(var, config)
+    await cg.register_component(var, config)
     #cg.add(var.set_parent(paren))
-    #await cover.register_cover(var, config)
+    await cover.register_cover(var, config)
