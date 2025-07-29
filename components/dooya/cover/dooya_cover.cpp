@@ -14,15 +14,13 @@ static const char *TAG = "dooya_cover.cover";
 
 void DooyaCover::setup()
 {
-  if (address_.size() != 3)
+  if (!parent_->register_listener(address_, [this](std::string rx) {
+    parse_rx(rx);
+  }))
   {
-    ESP_LOGE(TAG, "Invalid address! %s", address_.c_str());
+    mark_failed();
     return;
   }
-
-  parent_->register_listener(address_, [this](std::string rx) {
-    parse_rx(rx);
-  });
 
   // Get current position on setup
   parent_->write_str(("!" + address_ + "r?;").c_str());
@@ -30,11 +28,6 @@ void DooyaCover::setup()
 
 void DooyaCover::loop()
 {
-  if (address_.size() != 3)
-  {
-    return;
-  }
-  
   if (current_operation != cover::COVER_OPERATION_IDLE && !polling_)
   {
     polling_ = true;
@@ -70,12 +63,6 @@ cover::CoverTraits DooyaCover::get_traits()
 
 void DooyaCover::control(const cover::CoverCall &call)
 {
-  if (address_.size() != 3)
-  {
-    ESP_LOGE(TAG, "Invalid address! %s", address_.c_str());
-    return;
-  }
-
   new_position_ = call.get_position();
   new_tilt_= call.get_tilt();
 

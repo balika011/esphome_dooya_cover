@@ -18,7 +18,7 @@ class DooyaBridge : public Component, public uart::UARTDevice
   void loop() override;
   void dump_config() override;
 
-  void register_listener(std::string address, const std::function<void(std::string)> &func);
+  bool register_listener(std::string address, const std::function<void(std::string)> &func);
 
   bool start_pairing();
 

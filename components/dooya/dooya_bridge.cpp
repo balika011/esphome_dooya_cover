@@ -76,21 +76,22 @@ void DooyaBridge::dump_config()
     ESP_LOGCONFIG(TAG, "%s", address.c_str());
 }
 
-void DooyaBridge::register_listener(std::string address, const std::function<void(std::string)> &func)
+bool DooyaBridge::register_listener(std::string address, const std::function<void(std::string)> &func)
 {
   if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) == paired_addresses_.end())
   {
     ESP_LOGE(TAG, "No device paired by address: %s", address.c_str());
-    return;
+    return false;
   }
 
   if (listeners_.find(address) != listeners_.end())
   {
     ESP_LOGE(TAG, "Listener already registered for address: %s", address.c_str());
-    return;
+    return false;
   }
   
   listeners_[address] = func;
+  return true;
 }
 
 bool DooyaBridge::start_pairing()
