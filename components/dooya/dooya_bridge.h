@@ -11,6 +11,20 @@
 namespace esphome {
 namespace dooya {
 
+class DooyaComponent : public Component, public Parented<DooyaBridge>
+{
+public:
+  DooyaComponent() { }
+  
+  // virtual void process_packet();
+
+  void set_address(std::string address) { address_ = address; }
+  std::string get_address() { return address_; };
+
+protected:
+  std::string address_;
+};
+
 class DooyaBridge : public Component, public uart::UARTDevice
 {
  public:

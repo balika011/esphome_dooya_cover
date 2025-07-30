@@ -10,20 +10,18 @@
 namespace esphome {
 namespace dooya {
 
-class DooyaCover : public Component, public cover::Cover, public Parented<DooyaBridge>
+class DooyaCover : public DooyaComponent, public cover::Cover
 {
  public:
   void setup() override;
   void loop() override;
   void dump_config() override;
   cover::CoverTraits get_traits() override;
-  void set_address(std::string address) { address_ = address; }
   
  protected:
   void control(const cover::CoverCall &call) override;
   void parse_rx(std::string rx);
 
-  std::string address_;
   optional<float> new_position_;
   optional<float> new_tilt_;
   bool polling_ = false;

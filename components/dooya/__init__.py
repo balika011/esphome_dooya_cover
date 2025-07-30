@@ -9,15 +9,29 @@ DEPENDENCIES = ["uart"]
 MULTI_CONF = True
 
 CONF_DOOYA_BRIDGE_ID = "dooya_bridge_id"
+CONF_ADDRESS = "address"
 
 dooya_ns = cg.esphome_ns.namespace("dooya")
+DooyaComponent = dooya_ns.class_("DooyaComponent", cg.Component, cg.Parented)
 DooyaBridge = dooya_ns.class_("DooyaBridge", cg.Component)
 
-HUB_CHILD_SCHEMA = cv.Schema(
+def validate_address(config):
+    if len(config[CONF_ADDRESS]) != 3:
+         raise cv.Invalid("Address MUST be 3 alphanumeric characters.")
+    return config
+
+DOOYA_CHILD_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_DOOYA_BRIDGE_ID): cv.use_id(DooyaBridge),
+        cv.Required(CONF_ADDRESS): cv.alphanumeric
     }
 )
+
+async def register_component(var, config):
+    paren = await cg.get_variable(config[CONF_DOOYA_BRIDGE_ID])
+    await cg.register_parented(var, paren)
+    cg.add(var.set_address(config[CONF_ADDRESS]))
+    await cg.register_component(var, config)
 
 CONFIG_SCHEMA = cv.Schema(
     {
