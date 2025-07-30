@@ -111,7 +111,7 @@ std::string packet_entries_to_string(std::vector<std::pair<DooyaPacketEntryTag, 
 {
   std::string ret;
   for (auto entry : entries)
-    ret += std::string(&entry.first, 1) + "=" + entry.second + " ";
+    ret += std::string((const char *) &entry.first, 1) + "=" + entry.second + " ";
   return ret;
 }
 
