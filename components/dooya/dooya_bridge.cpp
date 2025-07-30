@@ -165,16 +165,15 @@ void DooyaBridge::parse_packet()
     entries.push_back(std::make_pair(tag, value));
   }
 
-#if 0
   if (pairing_.req_sent)
   {
-    if (address == "000" && rx == "Epf")
+    if (address == DOOYA_ADDRESS_GLOBAL && entries.length() == 1 && entries[0].first == ERROR && entries[0].second == "pf")
     {
       ESP_LOGI(TAG, "Do device found (yet).");
       pairing_.req_sent = false;
       return;
     }
-    else if(rx == "A")
+    else if(entries.length() == 1 && entries[0].first == ADDED)
     {
       ESP_LOGI(TAG, "Paired to new device, address: %s", address.c_str());
       pairing_.req_sent = false;
@@ -183,7 +182,6 @@ void DooyaBridge::parse_packet()
       return;
     }
   }
-#endif
 
   if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) == paired_addresses_.end())
   {
