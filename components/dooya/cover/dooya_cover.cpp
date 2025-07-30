@@ -15,7 +15,7 @@ static const char *TAG = "dooya_cover.cover";
 void DooyaCover::setup()
 {
   if (!parent_->register_listener(address_, [this](std::string rx) {
-    parse_rx(rx);
+    process_packet(rx);
   }))
   {
     mark_failed();
@@ -108,9 +108,9 @@ void DooyaCover::control(const cover::CoverCall &call)
   }
 }
 
-void DooyaCover::parse_rx(std::string rx)
+void DooyaCover::process_packet(std::string rx)
 {
-  ESP_LOGD(TAG, "parse_rx: data: %s", rx.c_str());
+  ESP_LOGD(TAG, "process_packet: data: %s", rx.c_str());
 
   optional<float> data_position;
   optional<float> data_tilt;
@@ -133,7 +133,7 @@ void DooyaCover::parse_rx(std::string rx)
       case 'b': data_tilt = static_cast<float>(DOOYA_MAX_TILT - std::stoi(value)) / DOOYA_MAX_TILT; break;
     }
 	
-    ESP_LOGD(TAG, "parse_rx: tag: %c value: %s", tag, value.c_str());  
+    ESP_LOGD(TAG, "process_packet: tag: %c value: %s", tag, value.c_str());  
   }
 
   // Data for the position poll arrived
@@ -165,7 +165,7 @@ void DooyaCover::parse_rx(std::string rx)
         if (*data_position == position)
         {
           // If we arrive where we should set stuck flag, but that not supported by ESPHome yet.
-          ESP_LOGI(TAG, "parse_rx: The cover is stuck");
+          ESP_LOGI(TAG, "process_packet: The cover is stuck");
           stopped = true;
         }
       }

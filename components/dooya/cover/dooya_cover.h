@@ -20,7 +20,7 @@ class DooyaCover : public DooyaComponent, public cover::Cover
   
  protected:
   void control(const cover::CoverCall &call) override;
-  void parse_rx(std::string rx);
+  void process_packet(std::string rx) override;
 
   optional<float> new_position_;
   optional<float> new_tilt_;

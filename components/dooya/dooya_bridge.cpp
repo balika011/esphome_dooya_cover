@@ -34,12 +34,12 @@ void DooyaBridge::setup()
     }
   }
 
-  for (DooyaComponent *component : subcomponents_)
+  for (DooyaComponent *subcomponent : subcomponents_)
   {
-    if (std::find(paired_addresses_.begin(), paired_addresses_.end(), component->get_address()) == paired_addresses_.end())
+    if (std::find(paired_addresses_.begin(), paired_addresses_.end(), subcomponent->get_address()) == paired_addresses_.end())
     {
-      ESP_LOGE(TAG, "No device paired by address: %s", component->get_address().c_str());
-      component->mark_failed("Unknown address");
+      ESP_LOGE(TAG, "No device paired by address: %s", subcomponent->get_address().c_str());
+      subcomponent->mark_failed("Unknown address");
     }
   }
 }
@@ -72,7 +72,7 @@ void DooyaBridge::loop()
       rx_buf_.clear();
     rx_buf_ += byte;
     if (byte == ';')
-      parse_rx();
+      process_packet();
   }
 }
 
@@ -113,7 +113,7 @@ bool DooyaBridge::start_pairing()
   return true;
 }
 
-void DooyaBridge::parse_rx()
+void DooyaBridge::process_packet()
 {
   std::string rx = rx_buf_;
   rx_buf_.clear();
@@ -122,22 +122,22 @@ void DooyaBridge::parse_rx()
 
   rx = rx.substr(1, rx.length() - 2);
 
-  ESP_LOGD(TAG, "parse_rx: rx: %s", rx.c_str());
+  ESP_LOGD(TAG, "process_packet: rx: %s", rx.c_str());
 
   std::string address = rx.substr(0, 3);
   rx = rx.substr(3);
 
-  ESP_LOGD(TAG, "parse_rx: address: %s", address.c_str());
+  ESP_LOGD(TAG, "process_packet: address: %s", address.c_str());
 
   auto extra_index = rx.find(',');
   if (extra_index != std::string::npos)
   {
     std::string extra = rx.substr(extra_index + 1);
-    ESP_LOGD(TAG, "parse_rx: extra: %s", extra.c_str());
+    ESP_LOGD(TAG, "process_packet: extra: %s", extra.c_str());
     rx = rx.substr(0, extra_index);
   }
 
-  ESP_LOGD(TAG, "parse_rx: data: %s", rx.c_str());
+  ESP_LOGD(TAG, "process_packet: data: %s", rx.c_str());
 
   if (pairing_.req_sent)
   {
@@ -157,12 +157,20 @@ void DooyaBridge::parse_rx()
     }
   }
 
-  if (auto search = listeners_.find(address); search != listeners_.end())
-    search->second(rx);
-  else if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) != paired_addresses_.end())
-    ESP_LOGE(TAG, "No listener for address: %s", address.c_str());
-  else
+  if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) == paired_addresses_.end())
+  {
     ESP_LOGE(TAG, "Unknown address: %s", address.c_str());
+    return;
+  }
+
+  auto subcomponent = std::find_if(subcomponents_.begin(), subcomponents_.end(), [address](DooyaComponent *subcomponent) { subcomponent->get_address() == address });
+  if (subcomponent == subcomponents_.end())
+  {
+    ESP_LOGE(TAG, "Subcomponent for address: %s", address.c_str());
+    return;
+  }
+
+  subcomponent->
 }
 
 } //namespace dooya

@@ -29,7 +29,7 @@ class DooyaBridge : public Component, public uart::UARTDevice
   bool start_pairing();
 
  protected:
-  void parse_rx();
+  void process_packet();
 
   std::unordered_map<std::string, std::function<void(std::string)>> listeners_;
   std::string rx_buf_;
@@ -49,7 +49,7 @@ class DooyaComponent : public Component, public Parented<DooyaBridge>
 public:
   DooyaComponent() { }
   
-  // virtual void process_packet();
+  virtual void process_packet(std::string rx) override;
 
   void set_address(std::string address) { address_ = address; }
   std::string get_address() { return address_; };
