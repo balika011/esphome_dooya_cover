@@ -162,12 +162,12 @@ void DooyaBridge::parse_packet()
 	
     ESP_LOGD(TAG, "process_packet: tag: %c value: %s", tag, value.c_str());
 
-    entries.push_back(std::make_pair<DooyaPacketEntryTag, std::string>(tag, value));
+    entries.push_back(std::make_pair(tag, value));
   }
 
   for (auto entry : entries)
   {
-    ESP_LOGD(TAG, "process_packet: -- tag: %c value: %s", entry->first, entry->second.c_str());
+    ESP_LOGD(TAG, "process_packet: -- tag: %c value: %s", entry.first, entry.second.c_str());
   }
 
 #if 0
