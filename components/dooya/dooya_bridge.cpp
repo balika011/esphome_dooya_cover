@@ -107,6 +107,14 @@ std::unordered_map<DooyaPacketEntryTag, int> DooyaPacketEntryLen =
   { ADDED, 0 }
 };
 
+std::string packet_entries_to_string(std::vector<std::pair<DooyaPacketEntryTag, std::string>> entries)
+{
+  std::string ret;
+  for (auto entry : entries)
+    ret += entry.first + "=" + entry.second + " ";
+  return ret;
+}
+
 void DooyaBridge::parse_packet()
 {
   std::string rx = rx_buf_;
@@ -181,6 +189,18 @@ void DooyaBridge::parse_packet()
       paired_addresses_.push_back(address);
       return;
     }
+  }
+
+  if (address == DOOYA_ADDRESS_GLOBAL)
+  {
+    ESP_LOGE(TAG, "Unhandled global packet: %s", packet_entries_to_string(entries).c_str());
+    return;
+  }
+
+  if (address == address_)
+  {
+    ESP_LOGE(TAG, "Unhandled bridge packet: %s", packet_entries_to_string(entries).c_str());
+    return;
   }
 
   if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) == paired_addresses_.end())
