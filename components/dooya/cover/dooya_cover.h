@@ -18,7 +18,7 @@ class DooyaCover : public DooyaComponent, public cover::Cover
   void dump_config() override;
   cover::CoverTraits get_traits() override;
 
-  void process_packet(std::vector<std::pair<DooyaPacketEntryTag, std::string>> entries) override;
+  void process_packet(std::vector<std::pair<DooyaPacketEntryTag, std::string>> params) override;
   
  protected:
   void control(const cover::CoverCall &call) override;

@@ -107,11 +107,11 @@ std::unordered_map<DooyaPacketEntryTag, int> DooyaPacketEntryLen =
   { ADDED, 0 }
 };
 
-std::string packet_entries_to_string(std::vector<std::pair<DooyaPacketEntryTag, std::string>> entries)
+std::string packet_params_to_string(std::vector<std::pair<DooyaPacketEntryTag, std::string>> params)
 {
   std::string ret;
-  for (auto entry : entries)
-    ret += std::string((const char *) &entry.first, 1) + "=" + entry.second + " ";
+  for (auto param : params)
+    ret += std::string((const char *) &param.first, 1) + "=" + param.second + " ";
   return ret;
 }
 
@@ -141,7 +141,7 @@ void DooyaBridge::parse_packet()
 
   ESP_LOGD(TAG, "parse_packet: data: %s", rx.c_str());
 
-  std::vector<std::pair<DooyaPacketEntryTag, std::string>> entries;
+  std::vector<std::pair<DooyaPacketEntryTag, std::string>> params;
 
   while (rx.length() > 0)
   {
@@ -170,18 +170,18 @@ void DooyaBridge::parse_packet()
 	
     ESP_LOGD(TAG, "process_packet: tag: %c value: %s", tag, value.c_str());
 
-    entries.push_back(std::make_pair(tag, value));
+    params.push_back(std::make_pair(tag, value));
   }
 
   if (pairing_.req_sent)
   {
-    if (address == DOOYA_ADDRESS_GLOBAL && entries.size() == 1 && entries[0].first == ERROR && entries[0].second == "pf")
+    if (address == DOOYA_ADDRESS_GLOBAL && params.size() == 1 && params[0].first == ERROR && params[0].second == "pf")
     {
       ESP_LOGI(TAG, "Do device found (yet).");
       pairing_.req_sent = false;
       return;
     }
-    else if(entries.size() == 1 && entries[0].first == ADDED)
+    else if(params.size() == 1 && params[0].first == ADDED)
     {
       ESP_LOGI(TAG, "Paired to new device, address: %s", address.c_str());
       pairing_.req_sent = false;
@@ -193,13 +193,13 @@ void DooyaBridge::parse_packet()
 
   if (address == DOOYA_ADDRESS_GLOBAL)
   {
-    ESP_LOGE(TAG, "Unhandled global packet: %s", packet_entries_to_string(entries).c_str());
+    ESP_LOGE(TAG, "Unhandled global packet: %s", packet_params_to_string(params).c_str());
     return;
   }
 
   if (address == address_)
   {
-    ESP_LOGE(TAG, "Unhandled bridge packet: %s", packet_entries_to_string(entries).c_str());
+    ESP_LOGE(TAG, "Unhandled bridge packet: %s", packet_params_to_string(params).c_str());
     return;
   }
 
@@ -216,7 +216,7 @@ void DooyaBridge::parse_packet()
     return;
   }
 
-  (*subcomponent)->process_packet(entries);
+  (*subcomponent)->process_packet(params);
 }
 
 } //namespace dooya

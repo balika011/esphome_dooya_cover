@@ -53,19 +53,19 @@ cover::CoverTraits DooyaCover::get_traits()
   return traits;
 }
 
-void DooyaCover::process_packet(std::vector<std::pair<DooyaPacketEntryTag, std::string>> entries)
+void DooyaCover::process_packet(std::vector<std::pair<DooyaPacketEntryTag, std::string>> params)
 {
   optional<float> data_position;
   optional<float> data_tilt;
 
-  for (auto entry : entries)
+  for (auto param : params)
   {
-    ESP_LOGD(TAG, "process_packet: tag: %c value: %s", entry.first, entry.second.c_str());
+    ESP_LOGD(TAG, "process_packet: tag: %c value: %s", param.first, param.second.c_str());
 
-    switch(entry.first)
+    switch(param.first)
     {
-      case ROTATION: data_position = static_cast<float>(DOOYA_MAX_POSITION - std::stoi(entry.second)) / DOOYA_MAX_POSITION; break;
-      case TILT: data_tilt = static_cast<float>(DOOYA_MAX_TILT - std::stoi(entry.second)) / DOOYA_MAX_TILT; break;
+      case ROTATION: data_position = static_cast<float>(DOOYA_MAX_POSITION - std::stoi(param.second)) / DOOYA_MAX_POSITION; break;
+      case TILT: data_tilt = static_cast<float>(DOOYA_MAX_TILT - std::stoi(param.second)) / DOOYA_MAX_TILT; break;
     }
   }
 
