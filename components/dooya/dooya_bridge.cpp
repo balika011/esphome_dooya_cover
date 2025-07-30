@@ -81,6 +81,7 @@ void DooyaBridge::register_subcomponent(DooyaComponent *component)
   if (std::find(paired_addresses_.begin(), paired_addresses_.end(), component->get_address()) == paired_addresses_.end())
   {
     ESP_LOGE(TAG, "No device paired by address: %s", component->get_address().c_str());
+    component->mark_failed();
     return;
   }
 
