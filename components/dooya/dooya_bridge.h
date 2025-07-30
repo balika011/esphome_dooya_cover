@@ -20,6 +20,8 @@ class DooyaBridge : public Component, public uart::UARTDevice
   void loop() override;
   void dump_config() override;
 
+  float get_setup_priority() const override { return setup_priority::BLUETOOTH; }
+
   void register_subcomponent(DooyaComponent *component) { subcomponents_.push_back(component); }
 
   bool start_pairing();
