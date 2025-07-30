@@ -149,12 +149,12 @@ void DooyaBridge::parse_packet()
 
     std::string value;
     
-    if (*tag_len > 0)
+    if (tag_len->second > 0)
     {
-      value = rx.substr(0, *tag_len);
-      rx = rx.substr(*tag_len);
+      value = rx.substr(0, tag_len->second);
+      rx = rx.substr(tag_len->second);
     }
-    else if (*tag_len == -1)
+    else if (tag_len->second == -1)
     {
       value = rx;
       rx.clear();
