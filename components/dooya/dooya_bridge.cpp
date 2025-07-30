@@ -140,7 +140,7 @@ void DooyaBridge::parse_packet()
     DooyaPacketEntryTag tag = (DooyaPacketEntryTag) rx[0];
     rx = rx.substr(1);
 
-    auto tag_len = std::find(DooyaPacketEntryLen.begin(), DooyaPacketEntryLen.end(), tag);
+    auto tag_len = DooyaPacketEntryLen.find(tag);
     if (tag_len == DooyaPacketEntryLen.end())
     {
       ESP_LOGE(TAG, "Unknown packet tag: %c", tag);
