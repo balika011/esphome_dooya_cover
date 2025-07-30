@@ -170,7 +170,7 @@ void DooyaBridge::parse_packet()
     return;
   }
 
-  *subcomponent->process_packet(rx);
+  (*subcomponent)->process_packet(rx);
 }
 
 } //namespace dooya
