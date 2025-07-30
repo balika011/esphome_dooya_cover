@@ -137,7 +137,7 @@ void DooyaBridge::parse_packet()
 
   while (rx.length() > 0)
   {
-    char tag = rx[0];
+    DooyaPacketEntryTag tag = rx[0];
     rx = rx.substr(1);
 
     auto tag_len = std::find(DooyaPacketEntryLen.begin(), DooyaPacketEntryLen.end(), tag);
