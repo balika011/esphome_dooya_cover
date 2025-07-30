@@ -45,12 +45,14 @@ class DooyaBridge : public Component, public uart::UARTDevice
 
 enum DooyaPacketEntryTag : char
 {
+  ERROR = 'E',
   VERSION = 'v',
   NAME = 'N',
   MOVE = 'm',
   STOP = 's',
   ROTATION = 'r',
-  TILT = 'b'
+  TILT = 'b',
+  ADDED = 'A'
 };
 
 class DooyaComponent : public Component, public Parented<DooyaBridge>

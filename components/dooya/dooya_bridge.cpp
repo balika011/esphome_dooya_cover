@@ -97,12 +97,14 @@ bool DooyaBridge::start_pairing()
 
 std::unordered_map<DooyaPacketEntryTag, int> DooyaPacketEntryLen =
 {
+  { ERROR, 2},
   { VERSION, -1 },
   { NAME, -1 },
   { MOVE, 3 },
   { STOP, 0 },
   { ROTATION, 3 },
-  { TILT, 3 }
+  { TILT, 3 },
+  { ADDED, 0 }
 };
 
 void DooyaBridge::parse_packet()
@@ -131,6 +133,39 @@ void DooyaBridge::parse_packet()
 
   ESP_LOGD(TAG, "parse_packet: data: %s", rx.c_str());
 
+  std::vector<std::pair<DooyaPacketEntryTag, std::string>> entries;
+
+  while (rx.length() > 0)
+  {
+    char tag = rx[0];
+    rx = rx.substr(1);
+
+    auto tag_len = std::find(DooyaPacketEntryLen.begin(), DooyaPacketEntryLen.end(), tag);
+    if (tag_len == DooyaPacketEntryLen.end())
+    {
+      ESP_LOGE(TAG, "Unknown packet tag: %c", tag);
+      return;
+    }
+
+    std::string value;
+    
+    if (*tag_len > 0)
+    {
+      value = rx.substr(0, *tag_len);
+      rx = rx.substr(*tag_len);
+    }
+    else if (*tag_len == -1)
+    {
+      value = rx;
+      rx.clear();
+    }
+	
+    ESP_LOGD(TAG, "process_packet: tag: %c value: %s", tag, value.c_str());  
+
+    entries.push_back(std::make_pair<DooyaPacketEntryTag, std::string>(tag, value));
+  }
+
+#if 0
   if (pairing_.req_sent)
   {
     if (address == "000" && rx == "Epf")
@@ -163,6 +198,7 @@ void DooyaBridge::parse_packet()
   }
 
   (*subcomponent)->process_packet(rx);
+#endif
 }
 
 } //namespace dooya
