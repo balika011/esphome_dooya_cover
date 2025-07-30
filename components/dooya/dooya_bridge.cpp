@@ -72,7 +72,7 @@ void DooyaBridge::loop()
       rx_buf_.clear();
     rx_buf_ += byte;
     if (byte == ';')
-      process_packet();
+      parse_packet();
   }
 }
 
@@ -113,7 +113,7 @@ bool DooyaBridge::start_pairing()
   return true;
 }
 
-void DooyaBridge::process_packet()
+void DooyaBridge::parse_packet()
 {
   std::string rx = rx_buf_;
   rx_buf_.clear();
@@ -122,22 +122,22 @@ void DooyaBridge::process_packet()
 
   rx = rx.substr(1, rx.length() - 2);
 
-  ESP_LOGD(TAG, "process_packet: rx: %s", rx.c_str());
+  ESP_LOGD(TAG, "parse_packet: rx: %s", rx.c_str());
 
   std::string address = rx.substr(0, 3);
   rx = rx.substr(3);
 
-  ESP_LOGD(TAG, "process_packet: address: %s", address.c_str());
+  ESP_LOGD(TAG, "parse_packet: address: %s", address.c_str());
 
   auto extra_index = rx.find(',');
   if (extra_index != std::string::npos)
   {
     std::string extra = rx.substr(extra_index + 1);
-    ESP_LOGD(TAG, "process_packet: extra: %s", extra.c_str());
+    ESP_LOGD(TAG, "parse_packet: extra: %s", extra.c_str());
     rx = rx.substr(0, extra_index);
   }
 
-  ESP_LOGD(TAG, "process_packet: data: %s", rx.c_str());
+  ESP_LOGD(TAG, "parse_packet: data: %s", rx.c_str());
 
   if (pairing_.req_sent)
   {
@@ -170,7 +170,7 @@ void DooyaBridge::process_packet()
     return;
   }
 
-  subcomponent->
+  subcomponent->process_packet(rx);
 }
 
 } //namespace dooya
