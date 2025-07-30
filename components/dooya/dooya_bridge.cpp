@@ -10,7 +10,7 @@ static const char *TAG = "dooya_bridge.component";
 
 void DooyaBridge::setup()
 {
-  write_str("!000v?;");
+  write_str("!" + DOOYA_ADDRESS_GLOBAL + "v?;");
 
   // Wait for response...
   while (!available());
@@ -55,7 +55,7 @@ void DooyaBridge::loop()
     {
       if (!pairing_.req_sent)
       {
-        write_str("!000&;");
+        write_str("!" + DOOYA_ADDRESS_GLOBAL + "&;");
         pairing_.req_sent = true;
       }
     }

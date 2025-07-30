@@ -122,6 +122,8 @@ void DooyaCover::control(const cover::CoverCall &call)
   new_position_ = call.get_position();
   new_tilt_= call.get_tilt();
 
+  std::string cmd_params;
+
   if (new_position_.has_value())
   {
     ESP_LOGD(TAG, "control::position old: %f new: %f", position, *new_position_);
@@ -135,7 +137,7 @@ void DooyaCover::control(const cover::CoverCall &call)
     std::ostringstream ss;
     ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_position_) * DOOYA_MAX_POSITION);
 
-    parent_->write_str(("!" + address_ + "m" + ss.str() + ";").c_str());
+    cmd_params += "m" + ss.str();
   }
 
   if (new_tilt_.has_value())
@@ -151,7 +153,7 @@ void DooyaCover::control(const cover::CoverCall &call)
     std::ostringstream ss;
     ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_tilt_) * DOOYA_MAX_TILT);
 
-    parent_->write_str(("!" + address_ + "b" + ss.str() + ";").c_str());
+    cmd_params += "b" + ss.str();
   }
 
   if (call.get_stop())
@@ -160,8 +162,12 @@ void DooyaCover::control(const cover::CoverCall &call)
     publish_state();
 
     ESP_LOGD(TAG, "control::stop");
-    parent_->write_str(("!" + address_ + "s;").c_str());
+
+    cmd_params += "s";
   }
+
+  if (cmd_params.size() > 0)
+    parent_->write_str(("!" + address_ + cmd_params + ";").c_str());
 }
 
 }  // namespace dooya
