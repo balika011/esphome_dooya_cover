@@ -119,6 +119,12 @@ void DooyaCover::process_packet(std::vector<std::pair<DooyaPacketEntryTag, std::
 
 void DooyaCover::control(const cover::CoverCall &call)
 {
+  if (!is_ready())
+  {
+    ESP_LOGE(TAG, "Not ready.");
+    return;
+  }
+
   new_position_ = call.get_position();
   new_tilt_= call.get_tilt();
 
