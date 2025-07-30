@@ -1,13 +1,12 @@
 #pragma once
 
 #include <cinttypes>
-#include <unordered_map>
 #include <chrono>
 
 #include "esphome/core/component.h"
 #include "esphome/core/defines.h"
-#include "esphome/core/helpers.h"
 
+#include "esphome/components/dooya/dooya.h"
 #include "esphome/components/uart/uart.h"
 
 namespace esphome {
@@ -39,34 +38,6 @@ class DooyaBridge : public Component, public uart::UARTDevice
     std::chrono::time_point<std::chrono::high_resolution_clock> start;
     bool req_sent = false;
   } pairing_;
-};
-
-#define DOOYA_ADDRESS_GLOBAL std::string("000")
-
-enum DooyaPacketEntryTag : char
-{
-  ERROR = 'E',
-  VERSION = 'v',
-  NAME = 'N',
-  MOVE = 'm',
-  STOP = 's',
-  ROTATION = 'r',
-  TILT = 'b',
-  ADDED = 'A'
-};
-
-class DooyaComponent : public Component, public Parented<DooyaBridge>
-{
-public:
-  DooyaComponent() { }
-  
-  virtual void process_packet(std::vector<std::pair<DooyaPacketEntryTag, std::string>> params) = 0;
-
-  void set_address(std::string address) { address_ = address; }
-  std::string get_address() { return address_; };
-
-protected:
-  std::string address_;
 };
 
 }  // namespace dooya

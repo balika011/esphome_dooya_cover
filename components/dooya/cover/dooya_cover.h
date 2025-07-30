@@ -4,7 +4,7 @@
 
 #include "esphome/core/component.h"
 
-#include "esphome/components/dooya/dooya_bridge.h"
+#include "esphome/components/dooya/dooya.h"
 #include "esphome/components/cover/cover.h"
 
 namespace esphome {
