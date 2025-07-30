@@ -57,7 +57,7 @@ void DooyaBridge::loop()
     {
       if (!pairing_.req_sent)
       {
-        write_str("!" + DOOYA_ADDRESS_GLOBAL + "&;");
+        write_str(("!" + DOOYA_ADDRESS_GLOBAL + "&;").c_str());
         pairing_.req_sent = true;
       }
     }
