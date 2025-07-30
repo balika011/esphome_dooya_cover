@@ -1,7 +1,9 @@
 #include <thread>
 
-#include "dooya_bridge.h"
 #include "esphome/core/log.h"
+#include "esphome/components/dooya/dooya.h"
+
+#include "dooya_bridge.h"
 
 namespace esphome {
 namespace dooya {
