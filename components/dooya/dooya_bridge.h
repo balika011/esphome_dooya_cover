@@ -6,7 +6,6 @@
 #include "esphome/core/component.h"
 #include "esphome/core/defines.h"
 
-#include "esphome/components/dooya/dooya.h"
 #include "esphome/components/uart/uart.h"
 
 namespace esphome {
