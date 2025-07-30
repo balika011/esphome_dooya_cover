@@ -37,7 +37,7 @@ class DooyaBridge : public Component, public uart::UARTDevice
   } pairing_;
 };
 
-class DooyaComponent : public Component, public Parented<DooyaBridge>
+class DooyaComponent : public Component, public Parented //<DooyaBridge>
 {
 public:
   DooyaComponent() { }
