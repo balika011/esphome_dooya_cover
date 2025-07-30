@@ -163,7 +163,7 @@ void DooyaBridge::parse_packet()
     return;
   }
 
-  auto subcomponent = std::find_if(subcomponents_.begin(), subcomponents_.end(), [address](DooyaComponent *subcomponent) { return subcomponent->get_address() == address });
+  auto subcomponent = std::find_if(subcomponents_.begin(), subcomponents_.end(), [address](DooyaComponent *subcomponent) { return subcomponent->get_address() == address; });
   if (subcomponent == subcomponents_.end())
   {
     ESP_LOGE(TAG, "Subcomponent for address: %s", address.c_str());
