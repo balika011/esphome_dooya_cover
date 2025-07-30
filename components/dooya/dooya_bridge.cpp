@@ -76,6 +76,17 @@ void DooyaBridge::dump_config()
     ESP_LOGCONFIG(TAG, "%s", address.c_str());
 }
 
+void DooyaBridge::register_subcomponent(DooyaComponent *component)
+{
+  if (std::find(paired_addresses_.begin(), paired_addresses_.end(), component->get_address()) == paired_addresses_.end())
+  {
+    ESP_LOGE(TAG, "No device paired by address: %s", address.c_str());
+    return false;
+  }
+
+  subcomponents_.push_back(component);
+}
+
 bool DooyaBridge::register_listener(std::string address, const std::function<void(std::string)> &func)
 {
   if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) == paired_addresses_.end())

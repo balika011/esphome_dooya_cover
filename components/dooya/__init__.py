@@ -32,6 +32,7 @@ async def register_component(var, config):
     await cg.register_parented(var, paren)
     cg.add(var.set_address(config[CONF_ADDRESS]))
     await cg.register_component(var, config)
+    cg.add(paren.register_subcomponent(var))
 
 CONFIG_SCHEMA = cv.Schema(
     {

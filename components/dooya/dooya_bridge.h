@@ -13,12 +13,16 @@
 namespace esphome {
 namespace dooya {
 
+class DooyaComponent;
+
 class DooyaBridge : public Component, public uart::UARTDevice
 {
  public:
   void setup() override;
   void loop() override;
   void dump_config() override;
+
+  void register_subcomponent(DooyaComponent *component);
 
   bool register_listener(std::string address, const std::function<void(std::string)> &func);
 
@@ -31,6 +35,7 @@ class DooyaBridge : public Component, public uart::UARTDevice
   std::string rx_buf_;
   std::string address_;
   std::vector<std::string> paired_addresses_;
+  std::vector<DooyaComponent *> subcomponents_;
   struct 
   {
     bool in_progress = false;
