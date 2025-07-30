@@ -113,6 +113,16 @@ bool DooyaBridge::start_pairing()
   return true;
 }
 
+std::unordered_map<DooyaPacketEntryTag, int> DooyaPacketEntryLen =
+{
+  { VERSION, -1 },
+  { NAME, -1 },
+  { MOVE, 3 },
+  { STOP, 0 },
+  { ROTATION, 3 },
+  { TILT, 3 }
+};
+
 void DooyaBridge::parse_packet()
 {
   std::string rx = rx_buf_;

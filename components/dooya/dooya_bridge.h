@@ -24,14 +24,11 @@ class DooyaBridge : public Component, public uart::UARTDevice
 
   void register_subcomponent(DooyaComponent *component) { subcomponents_.push_back(component); }
 
-  bool register_listener(std::string address, const std::function<void(std::string)> &func);
-
   bool start_pairing();
 
  protected:
   void parse_packet();
 
-  std::unordered_map<std::string, std::function<void(std::string)>> listeners_;
   std::string rx_buf_;
   std::string address_;
   std::vector<std::string> paired_addresses_;
@@ -42,6 +39,18 @@ class DooyaBridge : public Component, public uart::UARTDevice
     std::chrono::time_point<std::chrono::high_resolution_clock> start;
     bool req_sent = false;
   } pairing_;
+};
+
+#define DOOYA_ADDRESS_GLOBAL std::string("000")
+
+enum DooyaPacketEntryTag : char
+{
+  VERSION = 'v',
+  NAME = 'N',
+  MOVE = 'm',
+  STOP = 's',
+  ROTATION = 'r',
+  TILT = 'b'
 };
 
 class DooyaComponent : public Component, public Parented<DooyaBridge>

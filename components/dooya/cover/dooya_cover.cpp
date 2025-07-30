@@ -14,14 +14,6 @@ static const char *TAG = "dooya_cover.cover";
 
 void DooyaCover::setup()
 {
-  if (!parent_->register_listener(address_, [this](std::string rx) {
-    process_packet(rx);
-  }))
-  {
-    mark_failed();
-    return;
-  }
-
   // Get current position on setup
   parent_->write_str(("!" + address_ + "r?;").c_str());
 }
