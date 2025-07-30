@@ -33,6 +33,15 @@ void DooyaBridge::setup()
       std::this_thread::sleep_for(std::chrono::seconds(1));
     }
   }
+
+  for (DooyaComponent *component : subcomponents_)
+  {
+    if (std::find(paired_addresses_.begin(), paired_addresses_.end(), component->get_address()) == paired_addresses_.end())
+    {
+      ESP_LOGE(TAG, "No device paired by address: %s", component->get_address().c_str());
+      component->mark_failed("Unknown address");
+    }
+  }
 }
 
 void DooyaBridge::loop()
@@ -74,18 +83,6 @@ void DooyaBridge::dump_config()
   ESP_LOGCONFIG(TAG, "Paired devices:");
   for (std::string address : paired_addresses_)
     ESP_LOGCONFIG(TAG, "%s", address.c_str());
-}
-
-void DooyaBridge::register_subcomponent(DooyaComponent *component)
-{
-  if (std::find(paired_addresses_.begin(), paired_addresses_.end(), component->get_address()) == paired_addresses_.end())
-  {
-    ESP_LOGE(TAG, "No device paired by address: %s", component->get_address().c_str());
-    component->mark_failed("Unknown address");
-    return;
-  }
-
-  subcomponents_.push_back(component);
 }
 
 bool DooyaBridge::register_listener(std::string address, const std::function<void(std::string)> &func)
