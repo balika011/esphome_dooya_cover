@@ -49,7 +49,7 @@ class DooyaComponent : public Component, public Parented<DooyaBridge>
 public:
   DooyaComponent() { }
   
-  virtual void process_packet(std::string rx) override;
+  virtual void process_packet(std::string rx);
 
   void set_address(std::string address) { address_ = address; }
   std::string get_address() { return address_; };
