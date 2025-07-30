@@ -12,8 +12,8 @@ CONF_DOOYA_BRIDGE_ID = "dooya_bridge_id"
 CONF_ADDRESS = "address"
 
 dooya_ns = cg.esphome_ns.namespace("dooya")
-DooyaComponent = dooya_ns.class_("DooyaComponent", cg.Component, cg.Parented)
 DooyaBridge = dooya_ns.class_("DooyaBridge", cg.Component)
+DooyaComponent = dooya_ns.class_("DooyaComponent", cg.Component, cg.Parented)
 
 def validate_address(config):
     if len(config[CONF_ADDRESS]) != 3:

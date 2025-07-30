@@ -11,20 +11,6 @@
 namespace esphome {
 namespace dooya {
 
-class DooyaComponent : public Component, public Parented<DooyaBridge>
-{
-public:
-  DooyaComponent() { }
-  
-  // virtual void process_packet();
-
-  void set_address(std::string address) { address_ = address; }
-  std::string get_address() { return address_; };
-
-protected:
-  std::string address_;
-};
-
 class DooyaBridge : public Component, public uart::UARTDevice
 {
  public:
@@ -49,6 +35,20 @@ class DooyaBridge : public Component, public uart::UARTDevice
     std::chrono::time_point<std::chrono::high_resolution_clock> start;
     bool req_sent = false;
   } pairing_;
+};
+
+class DooyaComponent : public Component, public Parented<DooyaBridge>
+{
+public:
+  DooyaComponent() { }
+  
+  // virtual void process_packet();
+
+  void set_address(std::string address) { address_ = address; }
+  std::string get_address() { return address_; };
+
+protected:
+  std::string address_;
 };
 
 }  // namespace dooya
