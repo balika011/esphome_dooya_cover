@@ -167,13 +167,13 @@ void DooyaBridge::parse_packet()
 
   if (pairing_.req_sent)
   {
-    if (address == DOOYA_ADDRESS_GLOBAL && entries.length() == 1 && entries[0].first == ERROR && entries[0].second == "pf")
+    if (address == DOOYA_ADDRESS_GLOBAL && entries.size() == 1 && entries[0].first == ERROR && entries[0].second == "pf")
     {
       ESP_LOGI(TAG, "Do device found (yet).");
       pairing_.req_sent = false;
       return;
     }
-    else if(entries.length() == 1 && entries[0].first == ADDED)
+    else if(entries.size() == 1 && entries[0].first == ADDED)
     {
       ESP_LOGI(TAG, "Paired to new device, address: %s", address.c_str());
       pairing_.req_sent = false;
