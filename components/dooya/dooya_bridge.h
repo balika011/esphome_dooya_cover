@@ -60,7 +60,7 @@ class DooyaComponent : public Component, public Parented<DooyaBridge>
 public:
   DooyaComponent() { }
   
-  virtual void process_packet(std::string rx) = 0;
+  virtual void process_packet(std::vector<std::pair<DooyaPacketEntryTag, std::string>> entries) = 0;
 
   void set_address(std::string address) { address_ = address; }
   std::string get_address() { return address_; };

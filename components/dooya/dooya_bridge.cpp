@@ -149,25 +149,20 @@ void DooyaBridge::parse_packet()
 
     std::string value;
     
-    if (tag_len->second > 0)
-    {
-      value = rx.substr(0, tag_len->second);
-      rx = rx.substr(tag_len->second);
-    }
-    else if (tag_len->second == -1)
+    if (tag_len->second == -1)
     {
       value = rx;
       rx.clear();
+    }
+    else if (tag_len->second > 0)
+    {
+      value = rx.substr(0, tag_len->second);
+      rx = rx.substr(tag_len->second);
     }
 	
     ESP_LOGD(TAG, "process_packet: tag: %c value: %s", tag, value.c_str());
 
     entries.push_back(std::make_pair(tag, value));
-  }
-
-  for (auto entry : entries)
-  {
-    ESP_LOGD(TAG, "process_packet: -- tag: %c value: %s", entry.first, entry.second.c_str());
   }
 
 #if 0
@@ -188,6 +183,7 @@ void DooyaBridge::parse_packet()
       return;
     }
   }
+#endif
 
   if (std::find(paired_addresses_.begin(), paired_addresses_.end(), address) == paired_addresses_.end())
   {
@@ -202,8 +198,7 @@ void DooyaBridge::parse_packet()
     return;
   }
 
-  (*subcomponent)->process_packet(rx);
-#endif
+  (*subcomponent)->process_packet(entries);
 }
 
 } //namespace dooya

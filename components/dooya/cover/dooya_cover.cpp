@@ -53,79 +53,20 @@ cover::CoverTraits DooyaCover::get_traits()
   return traits;
 }
 
-void DooyaCover::control(const cover::CoverCall &call)
+void DooyaCover::process_packet(std::vector<std::pair<DooyaPacketEntryTag, std::string>> entries)
 {
-  new_position_ = call.get_position();
-  new_tilt_= call.get_tilt();
-
-  if (new_position_.has_value())
-  {
-    ESP_LOGD(TAG, "control::position old: %f new: %f", position, *new_position_);
-
-    if (position > *new_position_)
-      current_operation = cover::COVER_OPERATION_CLOSING;
-    else
-      current_operation = cover::COVER_OPERATION_OPENING;
-    publish_state();
-
-    std::ostringstream ss;
-    ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_position_) * DOOYA_MAX_POSITION);
-
-    parent_->write_str(("!" + address_ + "m" + ss.str() + ";").c_str());
-  }
-
-  if (new_tilt_.has_value())
-  {
-    ESP_LOGD(TAG, "control::tilt old: %f new: %f", tilt, *new_tilt_);
-
-    if (tilt > *new_tilt_)
-      current_operation = cover::COVER_OPERATION_CLOSING;
-    else
-      current_operation = cover::COVER_OPERATION_OPENING;
-    publish_state();
-
-    std::ostringstream ss;
-    ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_tilt_) * DOOYA_MAX_TILT);
-
-    parent_->write_str(("!" + address_ + "b" + ss.str() + ";").c_str());
-  }
-
-  if (call.get_stop())
-  {
-    current_operation = cover::COVER_OPERATION_IDLE;
-    publish_state();
-
-    ESP_LOGD(TAG, "control::stop");
-    parent_->write_str(("!" + address_ + "s;").c_str());
-  }
-}
-
-void DooyaCover::process_packet(std::string rx)
-{
-  ESP_LOGD(TAG, "process_packet: data: %s", rx.c_str());
-
   optional<float> data_position;
   optional<float> data_tilt;
 
-  while (rx.length() > 0)
+  for (auto entry : entries)
   {
-    char tag = rx[0];
-    rx = rx.substr(1);
+    ESP_LOGD(TAG, "process_packet: tag: %c value: %s", entry.first, entry.second.c_str());
 
-    std::string value;
-    while(rx.length() > 0 && isdigit(rx[0]))
+    switch(entry.first)
     {
-      value += rx[0];
-      rx = rx.substr(1);
+      case ROTATION: data_position = static_cast<float>(DOOYA_MAX_POSITION - std::stoi(entry.second)) / DOOYA_MAX_POSITION; break;
+      case TILT: data_tilt = static_cast<float>(DOOYA_MAX_TILT - std::stoi(entry.second)) / DOOYA_MAX_TILT; break;
     }
-
-    switch(tag)
-    {
-      case 'r': data_position = static_cast<float>(DOOYA_MAX_POSITION - std::stoi(value)) / DOOYA_MAX_POSITION; break;
-      case 'b': data_tilt = static_cast<float>(DOOYA_MAX_TILT - std::stoi(value)) / DOOYA_MAX_TILT; break;
-    }
-	
-    ESP_LOGD(TAG, "process_packet: tag: %c value: %s", tag, value.c_str());  
   }
 
   // Data for the position poll arrived
@@ -174,6 +115,53 @@ void DooyaCover::process_packet(std::string rx)
     tilt = *data_tilt;
 
   publish_state();
+}
+
+void DooyaCover::control(const cover::CoverCall &call)
+{
+  new_position_ = call.get_position();
+  new_tilt_= call.get_tilt();
+
+  if (new_position_.has_value())
+  {
+    ESP_LOGD(TAG, "control::position old: %f new: %f", position, *new_position_);
+
+    if (position > *new_position_)
+      current_operation = cover::COVER_OPERATION_CLOSING;
+    else
+      current_operation = cover::COVER_OPERATION_OPENING;
+    publish_state();
+
+    std::ostringstream ss;
+    ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_position_) * DOOYA_MAX_POSITION);
+
+    parent_->write_str(("!" + address_ + "m" + ss.str() + ";").c_str());
+  }
+
+  if (new_tilt_.has_value())
+  {
+    ESP_LOGD(TAG, "control::tilt old: %f new: %f", tilt, *new_tilt_);
+
+    if (tilt > *new_tilt_)
+      current_operation = cover::COVER_OPERATION_CLOSING;
+    else
+      current_operation = cover::COVER_OPERATION_OPENING;
+    publish_state();
+
+    std::ostringstream ss;
+    ss << std::setw(3) << std::setfill('0') << static_cast<int>((1.0f - *new_tilt_) * DOOYA_MAX_TILT);
+
+    parent_->write_str(("!" + address_ + "b" + ss.str() + ";").c_str());
+  }
+
+  if (call.get_stop())
+  {
+    current_operation = cover::COVER_OPERATION_IDLE;
+    publish_state();
+
+    ESP_LOGD(TAG, "control::stop");
+    parent_->write_str(("!" + address_ + "s;").c_str());
+  }
 }
 
 }  // namespace dooya

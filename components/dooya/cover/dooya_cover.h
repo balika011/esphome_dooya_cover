@@ -17,10 +17,11 @@ class DooyaCover : public DooyaComponent, public cover::Cover
   void loop() override;
   void dump_config() override;
   cover::CoverTraits get_traits() override;
+
+  void process_packet(std::vector<std::pair<DooyaPacketEntryTag, std::string>> entries) override;
   
  protected:
   void control(const cover::CoverCall &call) override;
-  void process_packet(std::string rx) override;
 
   optional<float> new_position_;
   optional<float> new_tilt_;
